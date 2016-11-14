@@ -7,8 +7,13 @@ from gevent.pool import Pool
 
 monkey.patch_all()
 
+HTTP_VERBS = ["GET", "POST", "PUT", "DELETE", "HEAD"]
 
-def benchmark(url, concurrent, request_nums):
+
+def benchmark(url, method='GET', concurrent=1, request_nums=1, options=None):
+    if options is None:
+        options = {}
+
     pool = Pool(concurrent)
     result = []
     jobs = [pool.spawn(lambda goal, result: result.append(requests.get(goal)), url, result) for _ in
@@ -27,6 +32,10 @@ def main():
                         help='numbers of concurrent.', type=int, default=1)
     parser.add_argument('-n', '--requests',
                         help='numbers of requests.', type=int, default=1)
+    parser.add_argument('-m', '--method',
+                        help='HTTP method used to request, support: {}'.format(','.join(HTTP_VERBS)),
+                        default='GET')
+
     parser.add_argument('-H', '--custom-header',
                         help='Add custom headers to every requests, format: key:value',
                         nargs='+')
@@ -40,7 +49,26 @@ def main():
         parser.print_usage()
         sys.exit(0)
 
-    print(args.custom_header)
+    option = {}
+
+    def _split(kv_dicts, kv_type):
+        kv_dict = {}
+        for kv in kv_dicts:
+            _kv = kv.split(':')
+            if len(_kv) != 2:
+                print("{} is not valid {}, {} must be in key:value format.".format(kv, kv_type, kv_type))
+                parser.print_usage()
+                sys.exit(0)
+            kv_dict.update({_kv[0]: _kv[1]})
+        return kv_dicts
+
+    if args.custom_header is not None:
+        option['headers'] = _split(args.custom_header, 'header')
+
+    if args.custom_cookie is not None:
+        option['cookies'] = _split(args.custom_cookie, 'cookie')
+
+    print(option)
 
     # print(benchmark(args.url, args.concurrency, args.requests))
 
