@@ -16,7 +16,8 @@ def benchmark(url, method='GET', concurrent=1, request_nums=1, options=None):
 
     pool = Pool(concurrent)
     result = []
-    jobs = [pool.spawn(lambda goal, result: result.append(requests.get(goal)), url, result) for _ in
+    jobs = [pool.spawn(lambda goal, result, option: result.append(requests.get(goal, **option)), url, result, options)
+            for _ in
             range(request_nums)]
     pool.join()
 
@@ -24,7 +25,7 @@ def benchmark(url, method='GET', concurrent=1, request_nums=1, options=None):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Web Application Smoking Test. ")
+    parser = argparse.ArgumentParser(description="Web Application Smoking Test.")
 
     parser.add_argument('url',
                         help='Url to test.', nargs='?')
@@ -33,14 +34,14 @@ def main():
     parser.add_argument('-n', '--requests',
                         help='numbers of requests.', type=int, default=1)
     parser.add_argument('-m', '--method',
-                        help='HTTP method used to request, support: {}'.format(','.join(HTTP_VERBS)),
+                        help='HTTP method used to request, support: {}.'.format(','.join(HTTP_VERBS)),
                         default='GET')
 
     parser.add_argument('-H', '--custom-header',
-                        help='Add custom headers to every requests, format: key:value',
+                        help='Add custom headers to every requests, format: key:value.',
                         nargs='+')
     parser.add_argument('-C', '--custom-cookie',
-                        help='Add custom cookies to every requests, format: key:value',
+                        help='Add custom cookies to every requests, format: key:value.',
                         nargs='+')
 
     args = parser.parse_args()
@@ -68,9 +69,7 @@ def main():
     if args.custom_cookie is not None:
         option['cookies'] = _split(args.custom_cookie, 'cookie')
 
-    print(option)
-
-    # print(benchmark(args.url, args.concurrency, args.requests))
+    print(benchmark(args.url, args.concurrency, args.requests, options=option))
 
 
 if __name__ == "__main__":
