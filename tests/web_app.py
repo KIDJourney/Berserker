@@ -24,7 +24,13 @@ class App(object):
         if env['PATH_INFO'] == '/reset':
             self.called = 0
             return http_response('200 OK', 'done', start_response)
-
+        if env['PATH_INFO'] == '/cookie':
+            cookie = env.get('HTTP_COOKIE')
+            return http_response('200 OK', str(cookie), start_response)
+        if env['PATH_INFO'] == '/header':
+            return http_response('200 OK',
+                                 '<br>'.join(["{}={}".format(i, env[i]) for i in env if i.startswith('HTTP')]),
+                                 start_response)
         return http_response('404 Not Found', 'you are visiting' + env['PATH_INFO'], start_response)
 
 
@@ -37,3 +43,7 @@ def run_test_app():
 def start():
     return subprocess.Popen(
         [sys.executable, '-c', 'from tests.web_app import run_test_app; run_test_app()'])
+
+
+if __name__ == "__main__":
+    run_test_app()
