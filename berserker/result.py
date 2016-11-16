@@ -21,7 +21,10 @@ class ProcessBar:
         return (100 - self._current_process()) * self.get_width() * self.blank
 
     def get_width(self):
-        return int(os.popen('stty size', 'r').read().split()[1]) // 200
+        if hasattr(sys.stdout, 'istty') and sys.stdout.istty():
+            return int(os.popen('stty size', 'r').read().split()[1]) // 200
+        else:
+            return 1
 
     def show(self):
         sys.stdout.write('\r')
