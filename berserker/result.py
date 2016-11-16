@@ -4,7 +4,7 @@ from collections import defaultdict
 
 
 class ProcessBar:
-    def __init__(self, goal, fill='=', blank='-', output_format='[{}>{}] {:.0f}%', width=12):
+    def __init__(self, goal, fill='=', blank='-', output_format='[{}>{}] {:.0f}%'):
         self.goal = goal
         self.current = 0
         self.fill = fill
