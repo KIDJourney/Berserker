@@ -4,6 +4,10 @@ from collections import defaultdict
 
 
 class ProcessBar:
+    """Process Bar
+    show the request percent of benchmark
+    """
+
     def __init__(self, goal, fill='=', blank='-', output_format='[{}>{}] {:.0f}%'):
         self.goal = goal
         self.current = 0
@@ -37,6 +41,10 @@ class ProcessBar:
         sys.stdout.flush()
 
     def incr(self):
+        """
+        add current counter and show process.
+        :return:
+        """
         self.current = min(self.goal, self.current + 1)
         self.show()
 
@@ -80,6 +88,10 @@ class Results:
         self.process_bar.incr()
 
     def cal_status(self):
+        """
+        generate statistical data of benchmark result
+        :return: result dict
+        """
         result = {}
 
         result['concurrency'] = self.concurrency
@@ -101,6 +113,10 @@ class Results:
         return result
 
     def show(self):
+        """
+        display benchmark statistical data
+        :return:
+        """
         result = self.cal_status()
         output = """
 

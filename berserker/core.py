@@ -14,6 +14,15 @@ HTTP_VERBS = ["GET", "POST", "PUT", "DELETE", "HEAD"]
 
 
 def make_request(url, method, result, options):
+    """request make wrapper
+    accept request options and make request.
+    call result.incr for every request.
+    :param url: url to request
+    :param method: http method from request module
+    :param result: Result object
+    :param options: request options
+    :return: None
+    """
     start = time.time()
     try:
         response = method(url, **options)
@@ -23,10 +32,20 @@ def make_request(url, method, result, options):
         duration = time.time() - start
         result.add_status_record(response, duration)
     finally:
+        # result trigger
         result.incr()
 
 
 def benchmark(url, concurrent=1, request_nums=1, method='GET', options=None):
+    """main process of benchmark
+    Initialize gevent pool and result, run benchmark
+    :param url: url to request
+    :param concurrent: gevent concurrent nums
+    :param request_nums: total request nums
+    :param method: HTTP method
+    :param options: http related option
+    :return: Result object
+    """
     if options is None:
         options = {}
 
@@ -50,6 +69,10 @@ def benchmark(url, concurrent=1, request_nums=1, method='GET', options=None):
 
 
 def main():
+    """entry point
+    Accept cli arguments and do arguments check, then run benchmark
+    :return:
+    """
     parser = argparse.ArgumentParser(description="Web Application Smoking Test.")
 
     parser.add_argument('url',
