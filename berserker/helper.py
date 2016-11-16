@@ -9,7 +9,7 @@ def show_host_info(url):
     server_software = response.headers.get('server', 'UnKnown')
     server_host = url_parts.host or "Unknown"
     server_port = None
-    server_path = url_parts.path
+    server_path = url_parts.path or '/'
 
     if not url_parts.port and url_parts.scheme == 'https':
         server_port = 443

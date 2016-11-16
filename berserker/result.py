@@ -122,13 +122,20 @@ Transfer rate:          {transfer_rate:.2f} [Kbytes/sec] received
 Percentage of the requests served within a certain time (ms)
 """
 
+        duration_d = result['duration_distribution']
+
+        for index, duration in enumerate(duration_d, 1):
+            output += "{}% \t {:.2f}\n".format(100 - (len(duration_d) - index) * 10, duration * 1000)
+
+        print(duration_d)
+
         print(output)
 
 
 if __name__ == "__main__":
     import time
 
-    pb = ProcessBar(200)
-    for i in range(200):
+    pb = ProcessBar(1)
+    for i in range(10):
         time.sleep(0.01)
         pb.incr()
