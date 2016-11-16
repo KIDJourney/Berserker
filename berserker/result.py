@@ -95,12 +95,8 @@ class Results:
         request_durations = [duration for status_code, duration_list in self.status_counter.items() for duration in
                              duration_list]
         request_durations.sort()
-        mid = len(request_durations) // 2
-        end = len(request_durations)
-        step = max(len(request_durations) // 10, 1)
-        precent_value = request_durations[mid:end:step][:-1] + [request_durations[-1]]
 
-        result['duration_distribution'] = precent_value
+        result['duration_distribution'] = request_durations
 
         return result
 
@@ -123,11 +119,12 @@ Percentage of the requests served within a certain time (ms)
 """
 
         duration_d = result['duration_distribution']
+        start = max(11 - len(duration_d), 6)
+        show_percent = [i / 10 for i in range(start, 11)]
 
-        for index, duration in enumerate(duration_d, 1):
-            output += "{}% \t {:.2f}\n".format(100 - (len(duration_d) - index) * 10, duration * 1000)
-
-        print(duration_d)
+        for percent in show_percent:
+            index = min(int(len(duration_d) * percent), len(duration_d) - 1)
+            output += "{}% \t {:.2f}\n".format(int(percent * 100), duration_d[index] * 1000)
 
         print(output)
 
