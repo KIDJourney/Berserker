@@ -48,7 +48,8 @@ class TestBerserker(unittest.TestCase):
         options = {
             'cookies': {'test': 'test'}
         }
-        responses = benchmark(urlparse.urljoin(self.url, 'cookie'), options=options)
+        result = benchmark(urlparse.urljoin(self.url, 'cookie'), options=options)
+        responses = result.responses
         for response in responses:
             assert _str(options['cookies']) in response.text
 
@@ -56,6 +57,11 @@ class TestBerserker(unittest.TestCase):
         options = {
             'headers': {'self_defined_header': 'blablabla'}
         }
-        responses = benchmark(urlparse.urljoin(self.url, 'header'), options=options)
+        result = benchmark(urlparse.urljoin(self.url, 'cookie'), options=options)
+        responses = result.responses
         for response in responses:
             assert 'HTTP_{}={}'.format('self_defined_header'.upper(), 'blablabla') in response.text
+
+    def test_connect_error(self):
+        result = benchmark('http://127.0.0.1:23232', request_nums=5, concurrent=1)
+        assert len(result.errors) == 5
