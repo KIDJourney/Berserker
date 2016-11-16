@@ -48,6 +48,7 @@ class Results:
         """
         self.status_counter = defaultdict(list)
         self.errors = []
+        self.responses = []
 
         self.total_request = nums
         self.concurrency = concurrency
@@ -57,11 +58,12 @@ class Results:
 
     def add_error_record(self, exc):
         self.errors.append(exc)
-        self._incr()
+        self.incr()
 
     def add_status_record(self, response, duration):
+        self.responses.append(response)
         self.status_counter[response.status_code].append(duration)
-        self._incr()
+        self.incr()
 
     def set_total_time(self, total_time):
         self.total_time = total_time
@@ -69,14 +71,15 @@ class Results:
     def parse_response(self, response):
         self.html_transferred += len(response.content)
 
-    def _incr(self):
+    def incr(self):
         self.process_bar.incr()
 
     def cal_status(self):
         result = {}
 
+        result['concurrency'] = self.concurrency
         result['time_taken_for_tests'] = self.total_time
-        result['complete_requests'] = sum(map(len, self.status_counter))
+        result['complete_requests'] = sum(map(len, self.status_counter.values()))
         result['failed_requests'] = len(self.errors)
         result['html_transferred'] = self.html_transferred
         result['request_per_second'] = self.total_request / self.total_time
@@ -88,7 +91,7 @@ class Results:
         request_durations.sort()
         mid = len(request_durations) // 2
         end = len(request_durations)
-        step = len(request_durations) // 10
+        step = max(len(request_durations) // 10, 1)
         precent_value = request_durations[mid:end:step][:-1] + [request_durations[-1]]
 
         result['duration_distribution'] = precent_value
@@ -112,8 +115,6 @@ Percentage of the requests served within a certain time (ms)
 """
         for index, value in enumerate(result['duration_distribution']):
             output += '{}% {} ms\n'.format(50 + 10 * index, value)
-
-        print(output)
 
 
 if __name__ == "__main__":
