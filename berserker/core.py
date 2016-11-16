@@ -1,25 +1,50 @@
 import argparse
 import sys
 import requests
+import time
 
 from gevent import monkey
 from gevent.pool import Pool
+
+from berserker.result import Results
 
 monkey.patch_all()
 
 HTTP_VERBS = ["GET", "POST", "PUT", "DELETE", "HEAD"]
 
 
-def benchmark(url, method='GET', concurrent=1, request_nums=1, options=None):
+def make_request(url, method, result, options):
+    start = time.time()
+    try:
+        response = method(url, **options)
+    except requests.RequestException as exc:
+        result.add_error_record(exc)
+    else:
+        duration = time.time() - start
+        result.add_status_record(response, duration)
+    finally:
+        result.incr()
+
+
+def benchmark(url, concurrent=1, request_nums=1, method='GET', options=None):
     if options is None:
         options = {}
 
+    start_time = time.time()
+
     pool = Pool(concurrent)
-    result = []
-    jobs = [pool.spawn(lambda goal, result, option: result.append(requests.get(goal, **option)), url, result, options)
-            for _ in
-            range(request_nums)]
-    pool.join()
+    request_method = getattr(requests, method.lower())
+    result = Results(concurrent, request_nums)
+
+    try:
+        jobs = [pool.spawn(make_request, url, request_method, result, options) for _ in range(request_nums)]
+        pool.join()
+    except KeyboardInterrupt:
+        pass
+
+    total_time = time.time() - start_time
+
+    result.set_total_time(total_time)
 
     return result
 
@@ -69,7 +94,10 @@ def main():
     if args.custom_cookie is not None:
         option['cookies'] = _split(args.custom_cookie, 'cookie')
 
-    print(benchmark(args.url, args.concurrency, args.requests, options=option))
+    benchmark_result = benchmark(url=args.url, concurrent=args.concurrency, request_nums=args.requests, options=option)
+    benchmark_result.show()
+
+    sys.exit(0)
 
 
 if __name__ == "__main__":
