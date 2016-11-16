@@ -5,7 +5,7 @@ install_requires = ['gevent', 'requests>=2.3.0']
 
 description = 'Web Application Smoking Test'
 
-classifiers = ["License :: OSI Approved :: MIT",
+classifiers = ["License :: OSI Approved :: MIT License",
                "Programming Language :: Python :: 3.3",
                "Programming Language :: Python :: 3.4",
                "Programming Language :: Python :: 3.5",
