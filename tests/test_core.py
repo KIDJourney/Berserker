@@ -57,7 +57,7 @@ class TestBerserker(unittest.TestCase):
         options = {
             'headers': {'self_defined_header': 'blablabla'}
         }
-        result = benchmark(urlparse.urljoin(self.url, 'cookie'), options=options)
+        result = benchmark(urlparse.urljoin(self.url, 'header'), options=options)
         responses = result.responses
         for response in responses:
             assert 'HTTP_{}={}'.format('self_defined_header'.upper(), 'blablabla') in response.text
