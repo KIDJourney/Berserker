@@ -5,8 +5,8 @@ import time
 
 from gevent import monkey
 from gevent.pool import Pool
-
 from berserker.result import Results
+from berserker.helper import show_host_info, show_intro, check_url
 
 monkey.patch_all()
 
@@ -94,6 +94,13 @@ def main():
     if args.custom_cookie is not None:
         option['cookies'] = _split(args.custom_cookie, 'cookie')
 
+    if not check_url(args.url):
+        print("{} is not a valid url.".format(args.url))
+        parser.print_usage()
+        sys.exit(1)
+
+    show_intro()
+    show_host_info(args.url)
     benchmark_result = benchmark(url=args.url, concurrent=args.concurrency, request_nums=args.requests, options=option)
     benchmark_result.show()
 
