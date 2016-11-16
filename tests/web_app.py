@@ -19,6 +19,8 @@ class App(object):
             return http_response('200 OK', 'hi', start_response)
         if env['PATH_INFO'] == '/count':
             return http_response('200 OK', self.called, start_response)
+        if env['PATH_INFO'] == '/method':
+            return http_response('200 OK', env['REQUEST_METHOD'], start_response)
         if env['PATH_INFO'] == '/redirect':
             return http_response('302 FOUND', [], start_response)
         if env['PATH_INFO'] == '/reset':
