@@ -1,6 +1,16 @@
 # Berserker
 
-Web Application Smoking Test. 
+Web Application Smoking Test.
+
+# requirement
+
+- python 3.x
+- gevent >= 1.1.2
+- requests>=2.3.0
+
+# install
+
+   $ pip install berserker
 
 # Usage
 
