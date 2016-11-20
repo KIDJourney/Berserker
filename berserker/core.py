@@ -2,15 +2,20 @@ import argparse
 import sys
 import requests
 import time
+import os
 
 from gevent import monkey
 from gevent.pool import Pool
 from berserker.result import Results
-from berserker.helper import show_host_info, show_intro, check_url
+from berserker.helper import show_host_info, show_intro, check_url, parse_config_file
 
 monkey.patch_all()
 
 HTTP_VERBS = ["GET", "POST", "PUT", "DELETE", "HEAD"]
+
+
+def run_config_json_task(task_configs):
+    pass
 
 
 def make_request(url, method, result, options):
@@ -36,11 +41,11 @@ def make_request(url, method, result, options):
         result.incr()
 
 
-def benchmark(url, concurrent=1, request_nums=1, method='GET', options=None):
+def benchmark(url, concurrency=1, request_nums=1, method='GET', options=None):
     """main process of benchmark
     Initialize gevent pool and result, run benchmark
     :param url: url to request
-    :param concurrent: gevent concurrent nums
+    :param concurrency: gevent concurrent nums
     :param request_nums: total request nums
     :param method: HTTP method
     :param options: http related option
@@ -51,9 +56,9 @@ def benchmark(url, concurrent=1, request_nums=1, method='GET', options=None):
 
     start_time = time.time()
 
-    pool = Pool(concurrent)
+    pool = Pool(concurrency)
     request_method = getattr(requests, method.lower())
-    result = Results(concurrent, request_nums)
+    result = Results(concurrency, request_nums)
 
     try:
         jobs = [pool.spawn(make_request, url, request_method, result, options) for _ in range(request_nums)]
@@ -91,6 +96,8 @@ def main():
     parser.add_argument('-C', '--custom-cookie',
                         help='Add custom cookies to every requests, format: key:value.',
                         nargs='+')
+    parser.add_argument('-F', '--config-file',
+                        help='Read benchmark config from file, json format.')
 
     args = parser.parse_args()
 
@@ -122,10 +129,27 @@ def main():
         parser.print_usage()
         sys.exit(1)
 
-    show_intro()
-    show_host_info(args.url)
-    benchmark_result = benchmark(url=args.url, concurrent=args.concurrency, request_nums=args.requests, options=option)
-    benchmark_result.show()
+    if args.config_file is not None:
+        try:
+            benchmark_configs = parse_config_file(args.config_file)
+        except Exception as exc:
+            print(repr(exc))
+
+        if not benchmark_configs:
+            print("no available benchmark config exist.")
+            sys.exit(0)
+
+        show_intro()
+        for config in benchmark_configs:
+            show_host_info(config.get('url'))
+            benchmark_result = benchmark(**benchmark_configs)
+            benchmark_result.show()
+    else:
+        show_intro()
+        show_host_info(args.url)
+        benchmark_result = benchmark(url=args.url, concurrency=args.concurrency, request_nums=args.requests,
+                                     options=option)
+        benchmark_result.show()
 
     sys.exit(0)
 
