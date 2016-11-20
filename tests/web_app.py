@@ -30,9 +30,11 @@ class App(object):
             cookie = env.get('HTTP_COOKIE')
             return http_response('200 OK', str(cookie), start_response)
         if env['PATH_INFO'] == '/header':
+            self.called += 1
             return http_response('200 OK',
                                  '<br>'.join(["{}={}".format(i, env[i]) for i in env if i.startswith('HTTP')]),
                                  start_response)
+
         return http_response('404 Not Found', 'you are visiting' + env['PATH_INFO'], start_response)
 
 
