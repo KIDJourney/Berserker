@@ -1,1 +1,38 @@
-[{"method": "post", "cookies": {"ca": "cv", "cb": "cv2"}, "data": {"key2": "value2", "key": "value"}, "url": "http://baidu.com", "headers": {"name2": "value2", "name": "value"}, "request_nums": 10, "concurrency": 10},{"method": "post", "cookies": {"ca": "cv", "cb": "cv2"}, "data": {"key2": "value2", "key": "value"}, "url": "http://baidu.com", "headers": {"name2": "value2", "name": "value"}, "request_nums": 5, "concurrency": 10}]
+[
+  {
+    "method": "post",
+    "cookies": {
+      "ca": "cv",
+      "cb": "cv2"
+    },
+    "data": {
+      "key2": "value2",
+      "key": "value"
+    },
+    "url": "http://baidu.com",
+    "headers": {
+      "name2": "value2",
+      "name": "value"
+    },
+    "request_nums": 10,
+    "concurrency": 10
+  },
+  {
+    "method": "post",
+    "cookies": {
+      "ca": "cv",
+      "cb": "cv2"
+    },
+    "data": {
+      "key2": "value2",
+      "key": "value"
+    },
+    "url": "http://baidu.com",
+    "headers": {
+      "name2": "value2",
+      "name": "value"
+    },
+    "request_nums": 5,
+    "concurrency": 10
+  }
+]
