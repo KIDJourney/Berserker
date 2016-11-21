@@ -41,7 +41,7 @@ class TestBerserker(unittest.TestCase):
         return int(requests.get(urlparse.urljoin(self.url, 'count')).content)
 
     def test_request_num(self):
-        benchmark(self.url, concurrent=1, request_nums=233)
+        benchmark(self.url, concurrency=1, request_nums=233)
         result = self.get_count()
         assert result == 233
 
@@ -71,5 +71,23 @@ class TestBerserker(unittest.TestCase):
                 assert method in response.text
 
     def test_connect_error(self):
-        result = benchmark('http://127.0.0.1:23232', request_nums=5, concurrent=1)
+        result = benchmark('http://127.0.0.1:23232', request_nums=5, concurrency=1)
         assert len(result.errors) == 5
+
+    def test_run_with_config(self):
+        config = {
+            'concurrency': 100,
+            'method': 'get',
+            'options': {'cookies': {'test_cookie': 'cookie_value'}, 'headers': {'name': 'value'}},
+            'request_nums': 1,
+            'url': 'http://localhost:5000'
+        }
+
+        result = benchmark(**config)
+
+        for response in result.responses:
+            for cookie_pair in config['options']['cookies']:
+                assert _str(cookie_pair) in response.text
+            for header_pair in config['options']['headers'].items():
+                assert 'HTTP_{}={}'.format(header_pair[0], header_pair[1]) in response.text
+            assert self.get_count() == config['concurrency']
