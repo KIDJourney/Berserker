@@ -1,3 +1,5 @@
+![berkserker](http://www.qlcoder.com/uploads/c8729fbac8/147935854827022.png)
+
 # Berserker
 
 Web Application Smoking Test.
@@ -14,12 +16,15 @@ Web Application Smoking Test.
 
 # Usage
 
-    usage: berserker [-h] [-c CONCURRENCY] [-n REQUESTS] [-m METHOD]
-                     [-H CUSTOM_HEADER [CUSTOM_HEADER ...]]
-                     [-C CUSTOM_COOKIE [CUSTOM_COOKIE ...]]
-                     [url]
+    usage: test.py [-h] [-c CONCURRENCY] [-n REQUESTS] [-m METHOD]
+                   [-H CUSTOM_HEADER [CUSTOM_HEADER ...]]
+                   [-C CUSTOM_COOKIE [CUSTOM_COOKIE ...]] [-F CONFIG_FILE]
+                   [url]
+
+
+Config File example is in [example](https://github.com/KIDJourney/Berserker/tree/master/example.json).
+
 
 # LICENSE 
 
 MIT.
- 
