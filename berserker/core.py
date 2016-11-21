@@ -19,6 +19,7 @@ def run_config_json_task(config_file):
         benchmark_configs = parse_config_file(config_file)
     except Exception as exc:
         print(repr(exc))
+        sys.exit(0)
 
     if not benchmark_configs:
         print("no available benchmark config exist.")
@@ -118,6 +119,7 @@ def main():
 
     if args.config_file is not None:
         run_config_json_task(args.config_file)
+        sys.exit(0)
 
     if args.url is None:
         parser.print_usage()
