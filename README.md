@@ -22,7 +22,7 @@ Web Application Smoking Test.
                    [url]
 
 
-Config File example is in [example](https://github.com/KIDJourney/Berserker/tree/master/example).
+Config File example is in [example](https://github.com/KIDJourney/Berserker/tree/master/example.json).
 
 
 # LICENSE 
