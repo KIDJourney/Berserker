@@ -14,8 +14,23 @@ monkey.patch_all()
 HTTP_VERBS = ["GET", "POST", "PUT", "DELETE", "HEAD"]
 
 
-def run_config_json_task(task_configs):
-    pass
+def run_config_json_task(config_file):
+    try:
+        benchmark_configs = parse_config_file(config_file)
+    except Exception as exc:
+        print(repr(exc))
+
+    if not benchmark_configs:
+        print("no available benchmark config exist.")
+        sys.exit(0)
+
+    show_intro()
+    for config in benchmark_configs:
+        show_host_info(config.get('url'))
+        benchmark_result = benchmark(**config)
+        benchmark_result.show()
+
+    sys.exit(0)
 
 
 def make_request(url, method, result, options):
@@ -102,22 +117,7 @@ def main():
     args = parser.parse_args()
 
     if args.config_file is not None:
-        try:
-            benchmark_configs = parse_config_file(args.config_file)
-        except Exception as exc:
-            print(repr(exc))
-
-        if not benchmark_configs:
-            print("no available benchmark config exist.")
-            sys.exit(0)
-
-        show_intro()
-        for config in benchmark_configs:
-            show_host_info(config.get('url'))
-            benchmark_result = benchmark(**config)
-            benchmark_result.show()
-
-        sys.exit(0)
+        run_config_json_task(args.config_file)
 
     if args.url is None:
         parser.print_usage()
