@@ -16,7 +16,7 @@ Web Application Smoking Test.
 
 # Usage
 
-    usage: test.py [-h] [-c CONCURRENCY] [-n REQUESTS] [-m METHOD]
+    usage: berserker [-h] [-c CONCURRENCY] [-n REQUESTS] [-m METHOD]
                    [-H CUSTOM_HEADER [CUSTOM_HEADER ...]]
                    [-C CUSTOM_COOKIE [CUSTOM_COOKIE ...]] [-F CONFIG_FILE]
                    [url]
