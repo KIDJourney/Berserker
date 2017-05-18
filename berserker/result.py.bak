@@ -1,4 +1,4 @@
-
+from __future__ import division
 import sys
 import os
 from collections import defaultdict
@@ -98,14 +98,14 @@ class Results:
         result['concurrency'] = self.concurrency
         result['request_nums'] = self.total_request
         result['time_taken_for_tests'] = self.total_time
-        result['complete_requests'] = sum(map(len, list(self.status_counter.values())))
+        result['complete_requests'] = sum(map(len, self.status_counter.values()))
         result['failed_requests'] = len(self.errors)
         result['html_transferred'] = self.html_transferred
         result['request_per_second'] = self.total_request / self.total_time
         result['time_per_request'] = self.total_time / self.total_request
         result['transfer_rate'] = self.html_transferred / self.total_time / 1024
 
-        request_durations = [duration for status_code, duration_list in list(self.status_counter.items()) for duration in
+        request_durations = [duration for status_code, duration_list in self.status_counter.items() for duration in
                              duration_list]
         request_durations.sort()
 
