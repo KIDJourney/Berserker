@@ -10,7 +10,7 @@ from berserker.core import HTTP_VERBS
 
 def _str(item):
     if isinstance(item, dict):
-        return '='.join([i for value in list(item.items()) for i in value])
+        return '='.join([i for value in item.items() for i in value])
     if isinstance(item, list):
         return '\n'.join([_str(i) for i in item])
 
@@ -88,6 +88,6 @@ class TestBerserker(unittest.TestCase):
         for response in result.responses:
             for cookie_pair in config['options']['cookies']:
                 assert _str(cookie_pair) in response.text
-            for header_pair in list(config['options']['headers'].items()):
+            for header_pair in config['options']['headers'].items():
                 assert 'HTTP_{}={}'.format(header_pair[0], header_pair[1]) in response.text
             assert self.get_count() == config['concurrency']

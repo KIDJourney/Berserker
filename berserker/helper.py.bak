@@ -22,13 +22,13 @@ def show_host_info(url):
     if url_parts.port:
         server_port = url_parts.port
 
-    print(("""
+    print("""
 Server Software: \t {}
 Server Hostname: \t {}
 Server Port:     \t {}
 
 Document Path:   \t {}
-""".format(server_software, server_host, server_port, server_path)))
+""".format(server_software, server_host, server_port, server_path))
 
 
 def show_intro():

@@ -18,7 +18,7 @@ def run_config_json_task(config_file):
     try:
         benchmark_configs = parse_config_file(config_file)
     except Exception as exc:
-        print((repr(exc)))
+        print(repr(exc))
         sys.exit(0)
 
     if not benchmark_configs:
@@ -132,7 +132,7 @@ def main():
         for kv in kv_dicts:
             _kv = kv.split(':')
             if len(_kv) != 2:
-                print(("{} is not valid {}, {} must be in key:value format.".format(kv, kv_type, kv_type)))
+                print("{} is not valid {}, {} must be in key:value format.".format(kv, kv_type, kv_type))
                 parser.print_usage()
                 sys.exit(0)
             kv_dict.update({_kv[0]: _kv[1]})
@@ -145,7 +145,7 @@ def main():
         option['cookies'] = _split(args.custom_cookie, 'cookie')
 
     if not check_url(args.url):
-        print(("{} is not a valid url.".format(args.url)))
+        print("{} is not a valid url.".format(args.url))
         parser.print_usage()
         sys.exit(1)
 
